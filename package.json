@@ -1,0 +1,22 @@
+{
+  "name": "powergrid",
+  "version": "1.0.0",
+  "description": "a powerful data grid",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "dependencies": {
+    "global": "^4.4.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.36",
+    "@types/react-dom": "^16.9.8"
+  }
+}
