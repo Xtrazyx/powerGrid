@@ -1,5 +1,13 @@
 import * as React from 'react';
+import {PowerGrid} from "./powerGrid";
 
 export default function App(){
-  return <div>Toto in vacation !</div>
+  const data = {
+      hello: 'Hello'
+  };
+
+  return (
+    <div>
+      <PowerGrid data={data}/>
+    </div>)
 }
