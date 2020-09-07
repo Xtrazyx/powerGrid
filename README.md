@@ -2,6 +2,17 @@
 
 A nice R&D project to investigate the power of a data and display generic grid.
 
+# Installation
+
+* Install parcel
+`
+yarn global add parcel-bundler
+`
+* Install dependencies
+`
+yarn install
+`
+
 ## Features - TODO
 
 PowerGrid
