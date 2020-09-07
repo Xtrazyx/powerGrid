@@ -2,7 +2,7 @@
 
 A nice R&D project to investigate the power of a data and display generic grid.
 
-# Installation
+## Installation
 
 * Install parcel
 `
@@ -11,6 +11,11 @@ yarn global add parcel-bundler
 * Install dependencies
 `
 yarn install
+`
+
+## Running the project
+`
+yarn start
 `
 
 ## Features - TODO
