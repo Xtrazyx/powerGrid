@@ -1,26 +1,28 @@
 import * as React from 'react';
 import { FunctionComponent, ComponentType } from 'react';
-import defaultRegistry from './registry';
+import defaultRegistry from './default/registry';
 
 interface CellData<T> {
     display: string; // used to call component from display registry
     value: T;
-    coordinates?: { row: number, column: number };
+    coordinates?: CellCoordinates;
+    setValue?: (coordinates: CellCoordinates, value: T) => void;
 }
 
-export type UiComponentProps<T> = {
-    value: T,
+export type CellCoordinates = { row: number, column: number };
+
+export type UiComponentProps<T> = Omit<CellData<T>, 'display'> & {
     mode: 'display' | 'error',
-    format?: string,
+    format?: string
 };
 
 interface DisplayRegistry {
     text: ComponentType<UiComponentProps<string>>;
     number: ComponentType<UiComponentProps<number>>;
-    [key: string]: ComponentType<any>;
+    [key: string]: ComponentType<UiComponentProps<any>>;
 }
 
-interface Data {
+export interface GridDataType {
     grid: { [coordinates: string]: CellData<any> };
     rowNames?: Array<String>;
     columnNames?: Array<String>;
@@ -33,7 +35,7 @@ export interface RegistryType {
 interface Props {
     rows: number; // TODO replace by rowStart, rowEnd
     columns: number; // TODO idem has rows
-    data?: Data;
+    data?: GridDataType;
     registry?: RegistryType;
 }
 
@@ -79,15 +81,15 @@ export const PowerGrid: FunctionComponent<Props> = props => {
 
         return {
             display: 'text',
-            value: `${x}_${y}`,
+            value: `empty ${x}_${y}`,
             coordinates: { row: x, column: y },
         };
     }
 
-    function Cell({ display, value, mode }) {
+    function Cell({ display, value, mode, coordinates, setValue }) {
         const Component = registry.display?.[display];
 
-        return <Component value={value} mode={mode} />;
+        return <Component value={value} mode={mode} coordinates={coordinates} setValue={setValue} />;
     }
 
     return (

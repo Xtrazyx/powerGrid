@@ -7,7 +7,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "dev": "parcel watch src/index.html && parcel src/index.html"
   },
   "dependencies": {
     "global": "^4.4.0",
