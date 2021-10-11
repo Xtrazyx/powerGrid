@@ -11,6 +11,9 @@
     "dev": "parcel watch src/index.html && parcel src/index.html"
   },
   "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@mui/material": "^5.0.2",
     "global": "^4.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

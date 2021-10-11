@@ -1,10 +1,10 @@
-import { SandPileValueType } from "../default/cells/sandpile";
-import { CellCoordinates, GridDataType, UiComponentProps } from "../powerGrid";
+import { GridDataType } from "../powerGrid";
 
 export function SandpileGenerator( 
     gridWidth: number, 
     gridHeight: number,
-    setState: (coordinates: CellCoordinates, value: SandPileValueType) => void)
+    sand: number,
+    fallout: number)
     : GridDataType 
     {
         let gridData = {};
@@ -17,8 +17,7 @@ export function SandpileGenerator(
                 
                 gridData[`${coordinates.row}_${coordinates.column}`] = 
                 { 
-                    value: 0, 
-                    setValue: setState, 
+                    value: { sand, fallout }, 
                     mode: 'display', 
                     display: 'sandpile',
                     coordinates

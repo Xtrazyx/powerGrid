@@ -1,30 +1,41 @@
 import * as React from 'react';
 import { SandpileGenerator } from '../components/generators/sandpileGenerator';
 import { PowerGrid } from '../components/powerGrid';
+import { styled } from '@mui/material/styles';
+
+const Container = styled('div')`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Main = styled('div')`
+    height: 100vh;
+    width: 100vw;
+`;
 
 export default function App() {
-    const data = {
-        grid: {
-            '0_0': { display: 'sandpile', value: 1 },
-            '0_1': { display: 'sandpile', value: 2 },
-            '0_2': { display: 'sandpile', value: 0 },
-        },
-    };
-
     const ROWS = 3;
     const COLUMNS = 3;
 
     const [rows, setRows] = React.useState(ROWS);
     const [columns, setColumns] = React.useState(COLUMNS);
 
-    const sandpiles = SandpileGenerator(ROWS,COLUMNS,()=>{})
-    console.log(sandpiles)
+    // TODO mettre dans un useEffect
+    const sandpiles = SandpileGenerator(ROWS, COLUMNS, 4, 5);
+    sandpiles;
 
     return (
-        <div>
-            <button onClick={() => setRows(rows + 1)}>add row</button>
-            <button onClick={() => setColumns(columns + 1)}>add columns</button>
-            <PowerGrid rows={rows} columns={columns} data={sandpiles} />
-        </div>
+        <Main>
+            <div>
+                <button onClick={() => setRows(rows + 1)}>add row</button>
+                <button onClick={() => setColumns(columns + 1)}>add columns</button>
+            </div>
+            <Container>
+                <PowerGrid rows={rows} columns={columns} data={sandpiles} />
+            </Container>
+        </Main>
     );
 }
