@@ -20,8 +20,8 @@ const Main = styled('div')`
 
 export default function App() {
     // Taille de la zone de jeu
-    const ROWS = 11;
-    const COLUMNS = 11;
+    const ROWS = 21;
+    const COLUMNS = 21;
     // Nombre de sables par tour
     const SAND_PER_TURN = 3;
     // Couleur des joueurs

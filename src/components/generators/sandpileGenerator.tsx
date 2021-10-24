@@ -8,7 +8,7 @@ export function SandpileGenerator(gridWidth: number, gridHeight: number, sand: n
 
     dataArray.forEach((item, index) => {
         const coordinates = { row: Math.floor(Math.fround(index / gridWidth)), column: index % gridWidth };
-
+console.log('sand generate coordinates', coordinates)
         gridData[`${coordinates.row}_${coordinates.column}`] = {
             value: { sand, fallout, owner: 'neutral' },
             mode: 'display',

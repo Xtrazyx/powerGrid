@@ -3,7 +3,6 @@ import { FunctionComponent, ComponentType } from 'react';
 import { useEffect } from 'react';
 import defaultRegistry from './default/registry';
 import { GridContext } from '../context/gridContext';
-import hash from 'object-hash';
 
 interface CellData<T> {
     display: string; // used to call component from display registry
