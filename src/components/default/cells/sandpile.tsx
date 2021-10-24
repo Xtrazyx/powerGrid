@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useContext, useState, useEffect, FunctionComponent } from 'react';
+import { useContext, FunctionComponent } from 'react';
 import { GridContext } from '../../../context/gridContext';
-import { CellCoordinates, UiComponentProps } from '../../powerGrid';
+import { UiComponentProps } from '../../powerGrid';
 
 export type SandPileValueType = { sand: number, fallout: number, owner: 'blue' | 'red' | 'neutral' };
 
@@ -27,7 +27,7 @@ export const Sandpile: FunctionComponent<UiComponentProps<SandPileValueType>> = 
                 style={{
                     height: '48px',
                     width: '48px ',
-                    backgroundColor: `hsl(${colors[value.owner] + cellValue.sand * 10}, 100%, 70%)`,
+                    backgroundColor: `hsl(${colors[value.owner] + cellValue.sand * 6}, 100%, 70%)`,
                     border: 'none',
                 }}
                 onClick={handleClick}

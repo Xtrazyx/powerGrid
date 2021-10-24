@@ -3,6 +3,7 @@ import { FunctionComponent, ComponentType } from 'react';
 import { useEffect } from 'react';
 import defaultRegistry from './default/registry';
 import { GridContext } from '../context/gridContext';
+import hash from 'object-hash';
 
 interface CellData<T> {
     display: string; // used to call component from display registry
@@ -73,12 +74,8 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
     }, [data]);
 
     useEffect(() => {
-        stateId !== 0 &&  validate();
+        validate();
     }, [stateId]);
-
-    function fakeId(): number {
-        return Math.random() * 10000 * Math.random();
-    }
 
     function generateGrid(rows: number, columns: number) {
         let grid: Array<any> = new Array(rows).fill(null).map(() => new Array(columns).fill(null));
@@ -118,7 +115,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
 
             setIsValid(false);
 
-            refreshState(fakeId());
+            refreshState(stateId + 1);
         }
     }
 
@@ -141,7 +138,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
 
         setValue(coordinates, {
             ...getValue(coordinates),
-            sand: 1,
+            sand: getValue(coordinates).sand -4,
         });
     }
 
@@ -160,7 +157,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
                 }
             }
 
-            !isValid && refreshState(fakeId());
+            !isValid && refreshState(stateId + 1);
         }
 
         checkGrid();
