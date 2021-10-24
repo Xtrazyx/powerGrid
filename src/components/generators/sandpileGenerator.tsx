@@ -17,7 +17,7 @@ export function SandpileGenerator(
                 
                 gridData[`${coordinates.row}_${coordinates.column}`] = 
                 { 
-                    value: { sand, fallout }, 
+                    value: { sand, fallout, owner: 'neutral' }, 
                     mode: 'display', 
                     display: 'sandpile',
                     coordinates
@@ -25,5 +25,5 @@ export function SandpileGenerator(
             }
         );
 
-        return { grid: gridData };
+        return gridData;
 }

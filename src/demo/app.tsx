@@ -2,6 +2,7 @@ import * as React from 'react';
 import { SandpileGenerator } from '../components/generators/sandpileGenerator';
 import { PowerGrid } from '../components/powerGrid';
 import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 
 const Container = styled('div')`
     width: 100%;
@@ -14,27 +15,30 @@ const Container = styled('div')`
 const Main = styled('div')`
     height: 100vh;
     width: 100vw;
+    background-color: hsl(34, 100%, 70%);
 `;
 
 export default function App() {
-    const ROWS = 3;
-    const COLUMNS = 3;
+    // Taille de la zone de jeu
+    const ROWS = 10;
+    const COLUMNS = 10;
+    // Nombre de sables par tour
+    const SAND_PER_TURN = 3;
+    // Couleur des joueurs
+    const Players = {
+        blue: 'Player 1',
+        red: 'Players 2'
+    }
 
-    const [rows, setRows] = React.useState(ROWS);
-    const [columns, setColumns] = React.useState(COLUMNS);
-
-    // TODO mettre dans un useEffect
     const sandpiles = SandpileGenerator(ROWS, COLUMNS, 4, 5);
-    sandpiles;
+
+    const [turn, setTurn] = useState('blue');
+    const [sandStock, setSandStock] = useState(SAND_PER_TURN);
 
     return (
         <Main>
-            <div>
-                <button onClick={() => setRows(rows + 1)}>add row</button>
-                <button onClick={() => setColumns(columns + 1)}>add columns</button>
-            </div>
             <Container>
-                <PowerGrid rows={rows} columns={columns} data={sandpiles} />
+                <PowerGrid rows={ROWS} columns={COLUMNS} data={sandpiles} />
             </Container>
         </Main>
     );

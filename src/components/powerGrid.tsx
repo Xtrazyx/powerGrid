@@ -3,15 +3,14 @@ import { FunctionComponent, ComponentType } from 'react';
 import { useEffect } from 'react';
 import defaultRegistry from './default/registry';
 import { GridContext } from '../context/gridContext';
-import { isConstructorDeclaration } from 'typescript';
 
 interface CellData<T> {
     display: string; // used to call component from display registry
     value: T;
     mode: 'display' | 'error';
     coordinates?: CellCoordinates;
-    setValue?: (coordinates: CellCoordinates, value: T) => void;
-    getValue?: (coordinates: CellCoordinates) => T;
+    setValue: (coordinates: CellCoordinates, value: T, event?: boolean) => void;
+    getValue: (coordinates: CellCoordinates) => T;
 }
 
 export type CellCoordinates = { row: number, column: number };
@@ -28,9 +27,7 @@ interface DisplayRegistry {
 }
 
 export interface GridDataType {
-    grid: { [coordinates: string]: CellData<any> };
-    rowNames?: Array<String>;
-    columnNames?: Array<String>;
+    [coordinates: string]: CellData<any>;
 }
 
 export interface RegistryType {
@@ -48,19 +45,22 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
     const { data, registry = defaultRegistry, rows, columns } = props;
 
     const [grid, setGrid] = React.useState([[]]);
-    const [dataState, setDataState] = React.useState(data);
+    const [gridState, setGridState] = React.useState(data);
+    const [stateId, refreshState] = React.useState(0);
+    const [isValid, setIsValid] = React.useState(false);
 
     const classes = {
         grid: {
             display: 'grid',
+            border: '2px #ffd86e dashed',
         },
         row: {
             display: 'flex',
         },
         cell: {
-            width: '120px',
-            height: '120px',
-            border: 'solid 1px grey',
+            width: '48px',
+            height: '48px',
+            border: 'none',
         },
     };
 
@@ -69,8 +69,16 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
     }, [rows, columns]);
 
     useEffect(() => {
-        setDataState(data);
+        setGridState(data);
     }, [data]);
+
+    useEffect(() => {
+        stateId !== 0 &&  validate();
+    }, [stateId]);
+
+    function fakeId(): number {
+        return Math.random() * 10000 * Math.random();
+    }
 
     function generateGrid(rows: number, columns: number) {
         let grid: Array<any> = new Array(rows).fill(null).map(() => new Array(columns).fill(null));
@@ -86,38 +94,80 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
     }
 
     function getCell(x: number, y: number): CellData<any> {
-        if (dataState.grid.hasOwnProperty(`${x}_${y}`)) {
-            return { ...dataState.grid[`${x}_${y}`], coordinates: { row: x, column: y }, setValue, getValue };
+        if (gridState.hasOwnProperty(`${x}_${y}`)) {
+            return {
+                ...gridState[`${x}_${y}`],
+                coordinates: { row: x, column: y },
+                setValue,
+                getValue,
+            };
         }
 
-        return {
-            display: 'text',
-            mode: 'display',
-            value: `empty ${x}_${y}`,
-            coordinates: { row: x, column: y },
-        };
+        return undefined;
     }
 
-    function setValue(coordinates: CellCoordinates, value: any) {
-        console.log('state to: ', { [`${coordinates.row}_${coordinates.column}`]: value });
-        setDataState((previous) => {
-            const retour = {
+    function setValue(coordinates: CellCoordinates, value: any, refresh?: boolean) {
+        if (gridState.hasOwnProperty(`${coordinates.row}_${coordinates.column}`)) {
+            setGridState((previous) => ({
                 ...previous,
-                grid: {
-                    ...previous.grid,
-                    [`${coordinates.row}_${coordinates.column}`]: {
-                        ...previous.grid[`${coordinates.row}_${coordinates.column}`],
-                        value,
-                    },
+                [`${coordinates.row}_${coordinates.column}`]: {
+                    ...previous[`${coordinates.row}_${coordinates.column}`],
+                    value,
                 },
-            };
-            console.log('retour', retour);
-            return retour;
+            }));
+
+            setIsValid(false);
+
+            refreshState(fakeId());
+        }
+    }
+
+    function safeSet(coordinates: CellCoordinates) {
+        const targets = [
+            { row: coordinates.row + 1, column: coordinates.column },
+            { row: coordinates.row - 1, column: coordinates.column },
+            { row: coordinates.row, column: coordinates.column + 1 },
+            { row: coordinates.row, column: coordinates.column - 1 },
+        ];
+
+        targets.forEach((item) => {
+            if (getValue(item)) {
+                setValue(item, {
+                    ...getValue(item),
+                    sand: getValue(item).sand + 1,
+                });
+            }
+        });
+
+        setValue(coordinates, {
+            ...getValue(coordinates),
+            sand: 1,
         });
     }
 
+    function validate() {
+
+        function checkGrid() {
+            if (isValid) return;
+
+            setIsValid(true);
+            
+            for (const coordinates in gridState) {
+                if (gridState[coordinates].value.sand >= gridState[coordinates].value.fallout) {
+                    safeSet(gridState[coordinates].coordinates);
+                    setIsValid(false);
+                    return;
+                }
+            }
+
+            !isValid && refreshState(fakeId());
+        }
+
+        checkGrid();
+    }
+
     function getValue(coordinates: CellCoordinates): any {
-        getCell(coordinates.row, coordinates.column).value;
+        return getCell(coordinates.row, coordinates.column)?.value;
     }
 
     function Cell(props: CellData<any>) {
@@ -128,7 +178,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
     }
 
     return (
-        <GridContext.Provider value={dataState}>
+        <GridContext.Provider value={gridState}>
             <div style={classes.grid}>
                 {grid &&
                     grid.map((rows, row) => (
