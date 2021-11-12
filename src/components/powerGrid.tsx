@@ -39,7 +39,21 @@ interface Props {
     columns: number; // TODO idem has rows
     data?: GridDataType;
     registry?: RegistryType;
+    validationCallback?: ValidationCallbackType;
 }
+
+interface StatesType {
+    grid: any[][];
+    setGrid: React.Dispatch<React.SetStateAction<any[][]>>;
+    gridState: GridDataType;
+    setGridState: React.Dispatch<React.SetStateAction<GridDataType>>;
+    stateId: number;
+    refreshState: React.Dispatch<React.SetStateAction<number>>;
+    isValid: boolean;
+    setIsValid: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export type ValidationCallbackType = (props: Omit<Props, 'validationCallback'>, states: StatesType) => void;
 
 export const PowerGrid: FunctionComponent<Props> = (props) => {
     const { data, registry = defaultRegistry, rows, columns } = props;
@@ -58,8 +72,8 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
             display: 'flex',
         },
         cell: {
-            width: '48px',
-            height: '48px',
+            width: '4px',
+            height: '4px',
             border: 'none',
         },
     };
@@ -113,53 +127,53 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
             }));
 
             setIsValid(false);
-
             refreshState(stateId + 1);
         }
     }
 
-    function safeSet(coordinates: CellCoordinates) {
-        const targets = [
-            { row: coordinates.row + 1, column: coordinates.column },
-            { row: coordinates.row - 1, column: coordinates.column },
-            { row: coordinates.row, column: coordinates.column + 1 },
-            { row: coordinates.row, column: coordinates.column - 1 },
-        ];
-
-        targets.forEach((item) => {
-            if (getValue(item)) {
-                setValue(item, {
-                    ...getValue(item),
-                    sand: getValue(item).sand + 1,
-                });
-            }
-        });
-
-        setValue(coordinates, {
-            ...getValue(coordinates),
-            sand: getValue(coordinates).sand -4,
-        });
-    }
-
     function validate() {
+        if (isValid) return;
+
+        setIsValid(true);
 
         function checkGrid() {
-            if (isValid) return;
-
-            setIsValid(true);
-            
-            for (const coordinates in gridState) {
-                if (gridState[coordinates].value.sand >= gridState[coordinates].value.fallout) {
-                    safeSet(gridState[coordinates].coordinates);
-                    setIsValid(false);
-                    return;
+            for (let i = 0; i < rows; ) {
+                for (let j = 0; j < columns; ) {
+                    const coordinates = `${i}_${j}`;
+    
+                    if (gridState[coordinates].value.sand >= gridState[coordinates].value.fallout) {
+                        const cellCoordinates = gridState[coordinates].coordinates;
+    
+                        const targets = [
+                            { row: cellCoordinates.row + 1, column: cellCoordinates.column },
+                            { row: cellCoordinates.row - 1, column: cellCoordinates.column },
+                            { row: cellCoordinates.row, column: cellCoordinates.column + 1 },
+                            { row: cellCoordinates.row, column: cellCoordinates.column - 1 },
+                        ];
+    
+                        targets.forEach((item) => {
+                            const cellCoord = stringifyCoordinates(item);
+    
+                            if (gridState[cellCoord]) {
+                                gridState[cellCoord].value.sand += 1;
+                            }
+                        });
+    
+                        gridState[coordinates].value.sand -= 4;
+    
+                        setIsValid(false);
+                    }
+                    j++;
                 }
+                i++;
             }
-
-            !isValid && refreshState(stateId + 1);
+        }
+        
+        for(let i = 0; i < 1000; i++) {
+            checkGrid();
         }
 
-        checkGrid();
+        !isValid && refreshState(stateId + 1);
     }
 
     function getValue(coordinates: CellCoordinates): any {
@@ -171,6 +185,10 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
         const Component = registry.display?.[display];
 
         return <Component {...props} />;
+    }
+
+    function stringifyCoordinates(coordinates: CellCoordinates): string {
+            return `${coordinates.row}_${coordinates.column}`;
     }
 
     return (
@@ -186,6 +204,9 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
                             ))}
                         </div>
                     ))}
+            </div>
+            <div>
+                {!isValid && 'calculating'}
             </div>
         </GridContext.Provider>
     );

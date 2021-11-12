@@ -2,38 +2,36 @@ import * as React from 'react';
 import { useContext, FunctionComponent } from 'react';
 import { GridContext } from '../../../context/gridContext';
 import { UiComponentProps } from '../../powerGrid';
+import styled from '@emotion/styled';
 
 export type SandPileValueType = { sand: number, fallout: number, owner: 'blue' | 'red' | 'neutral' };
 
+const SandPileColor = styled.div`
+    height: 4px;
+    width: 4px;
+    background-color: ${({ color }) => color};
+`;
+
 export const Sandpile: FunctionComponent<UiComponentProps<SandPileValueType>> = (props) => {
-    const { value, coordinates, mode = 'display', setValue, getValue } = props;
+    const { coordinates, setValue, getValue } = props;
 
     const grid = useContext(GridContext);
     const cellValue = grid?.[`${coordinates.row}_${coordinates.column}`]?.value;
 
-    const colors = {
-        neutral: 34,
-        blue: 217,
-        red: 0
-    }
+    const color = {
+        3: '#fd7200',
+        2: '#ffab5c',
+        1: '#fbd0b3',
+        0: '#fdeac2',
+    };
 
-    function handleClick() {
-        setValue(coordinates, { ...cellValue, sand: cellValue.sand + 1 }, cellValue.sand + 1 === cellValue.fallout);
-    }
+    /*  function handleClick() {
+        setValue(coordinates, { ...cellValue, sand: cellValue.sand + 1 }, cellValue.sand + 1 >= cellValue.fallout);
+    } */
 
     return (
-        <div>
-            <button
-                style={{
-                    height: '48px',
-                    width: '48px ',
-                    backgroundColor: `hsl(${colors[value.owner] + cellValue.sand * 6}, 100%, 70%)`,
-                    border: 'none',
-                }}
-                onClick={handleClick}
-            >
-                {cellValue.sand}
-            </button>
-        </div>
+        <SandPileColor
+            color={color[cellValue.sand]}
+        />
     );
 };

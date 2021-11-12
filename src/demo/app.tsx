@@ -20,8 +20,8 @@ const Main = styled('div')`
 
 export default function App() {
     // Taille de la zone de jeu
-    const ROWS = 21;
-    const COLUMNS = 21;
+    const ROWS = 211;
+    const COLUMNS = 211;
     // Nombre de sables par tour
     const SAND_PER_TURN = 3;
     // Couleur des joueurs
@@ -30,7 +30,7 @@ export default function App() {
         red: 'Players 2'
     }
 
-    const sandpiles = SandpileGenerator(ROWS, COLUMNS, 0, 5);
+    const sandpiles = SandpileGenerator(ROWS, COLUMNS, 0, 4);
 
     const [turn, setTurn] = useState('blue');
     const [sandStock, setSandStock] = useState(SAND_PER_TURN);
