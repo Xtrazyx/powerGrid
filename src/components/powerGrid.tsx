@@ -3,6 +3,8 @@ import { FunctionComponent, ComponentType } from 'react';
 import { useEffect } from 'react';
 import defaultRegistry from './default/registry';
 import { GridContext } from '../context/gridContext';
+import { omit } from 'lodash';
+import './default/global.css';
 
 interface CellData<T> {
     display: string; // used to call component from display registry
@@ -35,11 +37,14 @@ export interface RegistryType {
 }
 
 interface Props {
-    rows: number; // TODO replace by rowStart, rowEnd
+    rows: number; // TODO replace by rowStart, rowEnd to feature cell span
     columns: number; // TODO idem has rows
     data?: GridDataType;
     registry?: RegistryType;
     validationCallback?: ValidationCallbackType;
+    calculationRate?: number;
+    className?: string;
+    infos?: boolean;
 }
 
 interface StatesType {
@@ -51,32 +56,26 @@ interface StatesType {
     refreshState: React.Dispatch<React.SetStateAction<number>>;
     isValid: boolean;
     setIsValid: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export type ValidationCallbackType = (props: Omit<Props, 'validationCallback'>, states: StatesType) => void;
 
 export const PowerGrid: FunctionComponent<Props> = (props) => {
-    const { data, registry = defaultRegistry, rows, columns } = props;
+    const {
+        data,
+        registry = defaultRegistry,
+        rows,
+        columns,
+        validationCallback,
+        calculationRate = 1000,
+        className = 'default',
+        infos
+    } = props;
 
     const [grid, setGrid] = React.useState([[]]);
     const [gridState, setGridState] = React.useState(data);
     const [stateId, refreshState] = React.useState(0);
-    const [isValid, setIsValid] = React.useState(false);
-
-    const classes = {
-        grid: {
-            display: 'grid',
-            border: '2px #ffd86e dashed',
-        },
-        row: {
-            display: 'flex',
-        },
-        cell: {
-            width: '4px',
-            height: '4px',
-            border: 'none',
-        },
-    };
+    const [isValid, setIsValid] = React.useState(true);
 
     useEffect(() => {
         generateGrid(rows, columns);
@@ -84,6 +83,10 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
 
     useEffect(() => {
         setGridState(data);
+        if(data) {
+            setIsValid(false);
+            refreshState(stateId + 1);
+        }
     }, [data]);
 
     useEffect(() => {
@@ -116,7 +119,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
         return undefined;
     }
 
-    function setValue(coordinates: CellCoordinates, value: any, refresh?: boolean) {
+    function setValue(coordinates: CellCoordinates, value: any) {
         if (gridState.hasOwnProperty(`${coordinates.row}_${coordinates.column}`)) {
             setGridState((previous) => ({
                 ...previous,
@@ -136,41 +139,17 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
 
         setIsValid(true);
 
-        function checkGrid() {
-            for (let i = 0; i < rows; ) {
-                for (let j = 0; j < columns; ) {
-                    const coordinates = `${i}_${j}`;
-    
-                    if (gridState[coordinates].value.sand >= gridState[coordinates].value.fallout) {
-                        const cellCoordinates = gridState[coordinates].coordinates;
-    
-                        const targets = [
-                            { row: cellCoordinates.row + 1, column: cellCoordinates.column },
-                            { row: cellCoordinates.row - 1, column: cellCoordinates.column },
-                            { row: cellCoordinates.row, column: cellCoordinates.column + 1 },
-                            { row: cellCoordinates.row, column: cellCoordinates.column - 1 },
-                        ];
-    
-                        targets.forEach((item) => {
-                            const cellCoord = stringifyCoordinates(item);
-    
-                            if (gridState[cellCoord]) {
-                                gridState[cellCoord].value.sand += 1;
-                            }
-                        });
-    
-                        gridState[coordinates].value.sand -= 4;
-    
-                        setIsValid(false);
-                    }
-                    j++;
-                }
-                i++;
-            }
-        }
-        
-        for(let i = 0; i < 1000; i++) {
-            checkGrid();
+        for (let i = 0; i < calculationRate; i++) {
+            validationCallback(omit(props, 'validationCallback'), {
+                grid,
+                setGrid,
+                gridState,
+                setGridState,
+                stateId,
+                refreshState,
+                isValid,
+                setIsValid,
+            });
         }
 
         !isValid && refreshState(stateId + 1);
@@ -187,27 +166,25 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
         return <Component {...props} />;
     }
 
-    function stringifyCoordinates(coordinates: CellCoordinates): string {
-            return `${coordinates.row}_${coordinates.column}`;
-    }
-
     return (
         <GridContext.Provider value={gridState}>
-            <div style={classes.grid}>
+            <div className={className}>
                 {grid &&
                     grid.map((rows, row) => (
-                        <div style={classes.row} key={row}>
+                        <div className={'grid-row'} key={row}>
                             {rows.map((columns, column) => (
-                                <div style={classes.cell} key={column}>
+                                <div className={'grid-cell'} key={column}>
                                     <Cell {...getCell(row, column)} />
                                 </div>
                             ))}
                         </div>
                     ))}
             </div>
-            <div>
-                {!isValid && 'calculating'}
-            </div>
+            {infos && <div className={'infos'}>
+                <span className={!isValid ? 'pending': undefined}>{!isValid ? 'calculating' : 'done'}</span>
+                <br />
+                [iterations] {stateId * calculationRate}
+            </div>}
         </GridContext.Provider>
     );
 };

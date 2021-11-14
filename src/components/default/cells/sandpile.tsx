@@ -7,8 +7,9 @@ import styled from '@emotion/styled';
 export type SandPileValueType = { sand: number, fallout: number, owner: 'blue' | 'red' | 'neutral' };
 
 const SandPileColor = styled.div`
-    height: 4px;
-    width: 4px;
+    height: 2px;
+    width: 2px;
+    text-align: center;
     background-color: ${({ color }) => color};
 `;
 
@@ -32,6 +33,8 @@ export const Sandpile: FunctionComponent<UiComponentProps<SandPileValueType>> = 
     return (
         <SandPileColor
             color={color[cellValue.sand]}
-        />
+        >
+           
+        </SandPileColor>
     );
 };

@@ -1,8 +1,12 @@
-import { GridDataType } from '../powerGrid';
+import { CellCoordinates, GridDataType } from '../powerGrid';
 
-const INITIAL_SAND_DROP = { coordinates: { x: 106, y: 106 }, size: 80000 };
-
-export function SandpileGenerator(gridWidth: number, gridHeight: number, sand: number, fallout: number): GridDataType {
+export function SandpileGenerator(
+    gridWidth: number,
+    gridHeight: number,
+    sand: number,
+    fallout: number,
+    initialDrop?: { coordinates: CellCoordinates, size: number },
+): GridDataType {
     let gridData = {};
     let gridSetup = {};
 
@@ -19,13 +23,14 @@ export function SandpileGenerator(gridWidth: number, gridHeight: number, sand: n
         };
     });
 
-    gridSetup[`${INITIAL_SAND_DROP.coordinates.x}_${INITIAL_SAND_DROP.coordinates.y}`] = {
-            value: { sand: INITIAL_SAND_DROP.size, fallout, owner: 'neutral' },
+    if(initialDrop) {
+        gridSetup[`${initialDrop.coordinates.row}_${initialDrop.coordinates.column}`] = {
+            value: { sand: initialDrop.size, fallout, owner: 'neutral' },
             mode: 'display',
             display: 'sandpile',
-            coordinates: { row: INITIAL_SAND_DROP.coordinates.x, column: INITIAL_SAND_DROP.coordinates.y },
-        
-    };
+            coordinates: { row: initialDrop.coordinates.row, column: initialDrop.coordinates.column },
+        };
+    } 
 
-    return {...gridData, ...gridSetup};
+    return { ...gridData, ...gridSetup };
 }
