@@ -1,7 +1,7 @@
 {
-  "compilerOptions": {
-    "extends": "@tsconfig/node14/tsconfig.json",
-    "target": "es6",
-    "jsx": "react"
+    "compilerOptions": {
+        "target": "es2021",
+        "jsx": "react",
+        "moduleResolution": "node"
   }
 }
