@@ -7,59 +7,52 @@ import { ownerColor, OwnerColorType } from '../templates/sandpileColor';
 import { ExternalContext } from '../../../context/externalContext';
 
 export type SandPileValueType = {
-    sand: number;
-    fallout: number;
-    isHole?: boolean;
-    isCastle?: boolean;
-    owner: 'blue' | 'red' | 'neutral';
+    sand: number,
+    fallout: number,
+    isHole?: boolean,
+    isCastle?: boolean,
+    owner: 'blue' | 'red' | 'neutral',
 };
 
 export type SandPileColorType = {
-    selectColor?: string;
-    bgColor?: string;
-    hasPointer?: boolean;
-    isWhite?: boolean;
-    isHole?: boolean;
-    isCastle?: boolean;
-    isEmpty?: boolean;
-    borderSize?: number;
-    colors?: OwnerColorType;
-    owner: 'blue' | 'red' | 'neutral';
+    selectColor?: string,
+    bgColor?: string,
+    hasPointer?: boolean,
+    isWhite?: boolean,
+    isHole?: boolean,
+    isCastle?: boolean,
+    isEmpty?: boolean,
+    borderSize?: number,
+    colors?: OwnerColorType,
+    owner: 'blue' | 'red' | 'neutral',
 };
 
 type SandGridContextType = {
-    turn?: string;
-    sandStock?: number;
-    victory?: 'none' | 'red' | 'blue';
+    turn?: string,
+    sandStock?: number,
+    victory?: 'none' | 'red' | 'blue',
 };
-/*
-            3: '#fd7200',
-            2: '#ffab5c',
-            1: '#fbd0b3',
-            0: '#fdeac2',
-*/
+
 const SandPileColor = styled.button <SandPileColorType>`
     height: 100%;
     width: 100%;
     text-align: center;
     background-color: ${({ bgColor }) => bgColor};
-    ${({ isHole }) =>
-        !isHole &&
-        `
-            border-top-color: #fdeac2;
-            border-right-color: #ffab5c;
-            border-bottom-color: #fd7200;
-            border-left-color: #fbd0b3
-        `
-    };
     ${({ owner, colors }) =>
         `
-            border-top-color: ;
-            border-right-color: #ffab5c;
-            border-bottom-color: #fd7200;
-            border-left-color: #fbd0b3
+            border-top-color: ${colors[owner].sand[0]};
+            border-right-color: ${colors[owner].sand[2]};
+            border-bottom-color: ${colors[owner].sand[3]};
+            border-left-color: ${colors[owner].sand[1]};
+        `};
+    ${({ isCastle }) =>
+        isCastle &&
         `
-    };
+            border-top-color: #ffec66;
+            border-right-color: #c3c781;
+            border-bottom-color: #a9a257;
+            border-left-color: #ffdc7a;
+        `};
     cursor: ${({ hasPointer }) => (hasPointer ? 'pointer' : 'not-allowed')};
     color: ${({ isWhite, isEmpty }) => (isWhite ? 'white' : isEmpty ? '#ffbd66' : undefined)};
     font-weight: ${({ isWhite, isEmpty }) => (isWhite && 700) || (isEmpty && 700)};
@@ -69,7 +62,7 @@ const SandPileColor = styled.button <SandPileColorType>`
     margin: 0;
 
     &:hover {
-        border: 2px dashed ${({ selectColor }) => selectColor};
+        border: 3px dashed ${({ selectColor }) => selectColor};
     }
 `;
 
@@ -88,7 +81,11 @@ export const GamingSandpile: FunctionComponent<UiComponentProps<SandPileValueTyp
     };
 
     function handleClick() {
-        setValue(coordinates, { ...grid?.[`${coordinates.row}_${coordinates.column}`]?.value, sand: sand + 1, owner: external.turn });
+        setValue(coordinates, {
+            ...grid?.[`${coordinates.row}_${coordinates.column}`]?.value,
+            sand: sand + 1,
+            owner: external.turn,
+        });
         handleTurn();
     }
 

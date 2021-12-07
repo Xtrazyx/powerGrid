@@ -23,7 +23,7 @@ export function SandpileGenerator(
         };
     });
 
-    function generateCastle(color: string, coords: [number,number][]) {
+    function generateCastle(color: string, coords: [number, number][]) {
         const baseData = {
             mode: 'display',
             display: 'gamingSandpile',
@@ -33,12 +33,12 @@ export function SandpileGenerator(
             gridSetup[`${element[0]}_${element[1]}`] = {
                 ...baseData,
                 value: { sand: 3, fallout, owner: color, isCastle: true },
-                coordinates: { row: element[0], column: element[1]}
+                coordinates: { row: element[0], column: element[1] },
             };
         });
     }
 
-    function generateHoles(coords: [number,number][]) {
+    function generateHoles(coords: [number, number][]) {
         const baseData = {
             mode: 'display',
             display: 'gamingSandpile',
@@ -47,16 +47,35 @@ export function SandpileGenerator(
         coords.forEach((element) => {
             gridSetup[`${element[0]}_${element[1]}`] = {
                 ...baseData,
-                value: { sand: 3, fallout,  owner: 'neutral', isHole: true },
-                coordinates: { row: element[0], column: element[1]}
+                value: { sand: 3, fallout, owner: 'neutral', isHole: true },
+                coordinates: { row: element[0], column: element[1] },
             };
         });
     }
 
-    generateCastle('red', [[0,4], [0,5], [1,4], [1,5]]);
-    generateCastle('blue', [[9,4], [9,5], [8,4], [8,5]]);
+    generateCastle('red', [
+        [0, 4],
+        [0, 5],
+        [1, 4],
+        [1, 5],
+    ]);
+    generateCastle('blue', [
+        [9, 4],
+        [9, 5],
+        [8, 4],
+        [8, 5],
+    ]);
     generateHoles([
-        [4,4],[4,5],[5,4],[5,5],[4,0],[5,0],[4,9],[5,9],[0,0],[9,9],[9,0],[0,9]
+        [4, 4],
+        [4, 5],
+        [5, 4],
+        [5, 5],
+        [0, 0],
+        [9, 9],
+        [9, 0],
+        [0, 9],
+        [4, 3],
+        [5, 6],
     ]);
 
     if (initialDrop) {
