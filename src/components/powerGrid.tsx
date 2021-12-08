@@ -75,7 +75,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
         columns,
         validationCallback,
         setValueCallback,
-        calculationRate = 1000,
+        calculationRate = 1,
         className = 'default',
         infos,
         externalState,
@@ -127,7 +127,15 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
             };
         }
 
-        return undefined;
+        return {
+            display: 'text',
+            mode: 'display',
+            value: 'empty',
+            coordinates: { row: x, column: y },
+            setValue,
+            getValue,
+            handleTurn
+        };;
     }
 
     function getValue(coordinates: CellCoordinates): any {

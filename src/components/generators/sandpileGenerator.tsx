@@ -1,11 +1,25 @@
 import { CellCoordinates, GridDataType } from '../powerGrid';
 
+export type MapType = [
+    gridWidth: number,
+    gridHeight: number,
+    sand: number,
+    fallout: number,
+    redCastle: [number, number][],
+    blueCastle: [number, number][],
+    holes?: [number, number][],
+    initialDrop?: { coordinates: CellCoordinates, size: number }
+];
+
 export function SandpileGenerator(
     gridWidth: number,
     gridHeight: number,
     sand: number,
     fallout: number,
-    initialDrop?: { coordinates: CellCoordinates, size: number },
+    redCastle: [number, number][],
+    blueCastle: [number, number][],
+    holes?: [number, number][],
+    initialDrop?: { coordinates: CellCoordinates, size: number }
 ): GridDataType {
     let gridData = {};
     let gridSetup = {};
@@ -13,8 +27,8 @@ export function SandpileGenerator(
     const dataArray = new Array(gridHeight * gridWidth).fill(null);
 
     dataArray.forEach((item, index) => {
-        const coordinates = { row: Math.floor(Math.fround(index / gridWidth)), column: index % gridWidth };
-
+        const coordinates = { row: index % gridWidth, column: Math.floor(Math.fround(index / gridWidth)) };
+        
         gridData[`${coordinates.row}_${coordinates.column}`] = {
             value: { sand, fallout, owner: 'neutral' },
             mode: 'display',
@@ -39,6 +53,8 @@ export function SandpileGenerator(
     }
 
     function generateHoles(coords: [number, number][]) {
+        if(!coords) return;
+
         const baseData = {
             mode: 'display',
             display: 'gamingSandpile',
@@ -53,30 +69,9 @@ export function SandpileGenerator(
         });
     }
 
-    generateCastle('red', [
-        [0, 4],
-        [0, 5],
-        [1, 4],
-        [1, 5],
-    ]);
-    generateCastle('blue', [
-        [9, 4],
-        [9, 5],
-        [8, 4],
-        [8, 5],
-    ]);
-    generateHoles([
-        [4, 4],
-        [4, 5],
-        [5, 4],
-        [5, 5],
-        [0, 0],
-        [9, 9],
-        [9, 0],
-        [0, 9],
-        [4, 3],
-        [5, 6],
-    ]);
+    generateCastle('red', redCastle);
+    generateCastle('blue', blueCastle);
+    generateHoles(holes);
 
     if (initialDrop) {
         gridSetup[`${initialDrop.coordinates.row}_${initialDrop.coordinates.column}`] = {

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { SandpileGenerator } from '../components/generators/sandpileGenerator';
 import { CellCoordinates, PowerGrid, ValidationCallbackType, GridDataType } from '../components/powerGrid';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { ownerColor } from '../components/default/templates/sandpileColor';
+import { generateLevel } from './levels';
 
 const Main = styled('div')`
     height: 100vh;
@@ -84,22 +84,17 @@ const PlayerColor =
 `;
 
 export default function App() {
-    // Taille de la zone de jeu
-    const ROWS = 10;
-    const COLUMNS = 10;
     // Nombre de sables par tour
     const SAND_PER_TURN = 3;
-    // Initial sandpiles configuration
-    const INITIAL_SAND_DROP = { coordinates: { row: 10, column: 10 }, size: 0 };
-    // Grid configuration
-    const SANDPILES = SandpileGenerator(ROWS, COLUMNS, 0, 4, INITIAL_SAND_DROP);
-    const CALC_RATE = 1;
 
     // Game states
     const [turn, setTurn] = useState('blue');
     const [sandStock, setSandStock] = useState(SAND_PER_TURN);
     const [victory, setVictory] = useState('none');
     const [game, nextGame] = useState(0);
+
+    // Level
+    const [ROWS, COLUMNS, data] = generateLevel('pile');
 
     function handleReset() {
         nextGame(game + 1);
@@ -222,11 +217,10 @@ export default function App() {
                     key={game}
                     rows={ROWS}
                     columns={COLUMNS}
-                    data={SANDPILES}
+                    data={data}
                     validationCallback={checkGrid}
                     handleTurn={handleTurn}
                     externalState={{ turn, sandStock, victory }}
-                    calculationRate={CALC_RATE}
                 />
                 <RightColumn>
                     {victory !== 'none' && (
