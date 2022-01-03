@@ -3,7 +3,7 @@ import { CellCoordinates, PowerGrid, ValidationCallbackType, GridDataType } from
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { ownerColor } from '../components/default/templates/sandpileColor';
-import { generateLevel } from './levels';
+import { generateLevel, LevelName } from './levels';
 
 const Main = styled('div')`
     height: 100vh;
@@ -66,19 +66,23 @@ const Message = styled('div')`
     justify-content: center;
 `;
 
-const Reset = styled('div')`
+const Button = styled('div')`
     text-decoration: underline;
     cursor: pointer;
 `;
 
+const Choose = styled('div')`
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 150%;
+`
+
 type PlayerColorType = {
-    turn: string,
+    turn: string;
 };
 
-const PlayerColor =
-    styled('span') <
-    PlayerColorType >
-    `
+const PlayerColor = styled('span')<PlayerColorType>`
     color: ${({ turn }) => ownerColor[turn].select};
     font-weight: 700;
 `;
@@ -92,32 +96,40 @@ export default function App() {
     const [sandStock, setSandStock] = useState(SAND_PER_TURN);
     const [victory, setVictory] = useState('none');
     const [game, nextGame] = useState(0);
+    const [level, setLevel] = useState('square');
+    const [started, setStarted] = useState(false);
 
     // Level
-    const [ROWS, COLUMNS, data] = generateLevel('pile');
+    const [ROWS, COLUMNS, data, redCastle, blueCastle] = generateLevel(level as LevelName);
 
     function handleReset() {
         nextGame(game + 1);
         setTurn('blue');
         setSandStock(SAND_PER_TURN);
         setVictory('none');
+        setStarted(false);
+    }
+
+    function handleLevel(levelName: LevelName) {
+        setLevel(levelName);
+        setStarted(true);
     }
 
     function checkVictory(gridState: GridDataType): string {
         if (
-            gridState[`0_4`].value.owner === 'blue' &&
-            gridState[`0_5`].value.owner === 'blue' &&
-            gridState[`1_4`].value.owner === 'blue' &&
-            gridState[`1_5`].value.owner === 'blue'
+            gridState[redCastle[0]].value.owner === 'blue' &&
+            gridState[redCastle[1]].value.owner === 'blue' &&
+            gridState[redCastle[2]].value.owner === 'blue' &&
+            gridState[redCastle[3]].value.owner === 'blue'
         ) {
             setVictory('blue');
         }
 
         if (
-            gridState[`9_4`].value.owner === 'red' &&
-            gridState[`9_5`].value.owner === 'red' &&
-            gridState[`8_4`].value.owner === 'red' &&
-            gridState[`8_5`].value.owner === 'red'
+            gridState[blueCastle[0]].value.owner === 'red' &&
+            gridState[blueCastle[1]].value.owner === 'red' &&
+            gridState[blueCastle[2]].value.owner === 'red' &&
+            gridState[blueCastle[3]].value.owner === 'red'
         ) {
             setVictory('red');
         }
@@ -202,39 +214,61 @@ export default function App() {
 
     return (
         <Main>
-            <Board>
-                <LeftColumn>
-                    <Tools>
-                        <div>
-                            Player is <PlayerColor turn={turn}>{turn}</PlayerColor>
-                        </div>
-                        <div>
-                            Sand stock is <PlayerColor turn={turn}>{sandStock}</PlayerColor>
-                        </div>
-                    </Tools>
-                </LeftColumn>
-                <PowerGrid
-                    key={game}
-                    rows={ROWS}
-                    columns={COLUMNS}
-                    data={data}
-                    validationCallback={checkGrid}
-                    handleTurn={handleTurn}
-                    externalState={{ turn, sandStock, victory }}
-                />
-                <RightColumn>
-                    {victory !== 'none' && (
-                        <Message>
+            {
+                <Board>
+                    {started ? (
+                        <>
+                            <LeftColumn>
+                                <Tools>
+                                    <div>
+                                        Player is <PlayerColor turn={turn}>{turn}</PlayerColor>
+                                    </div>
+                                    <div>
+                                        Sand stock is <PlayerColor turn={turn}>{sandStock}</PlayerColor>
+                                    </div>
+                                    <div>|</div>
+                                    <div>
+                                        Level is <b>{level}</b>
+                                    </div>
+                                </Tools>
+                            </LeftColumn>
+                            <PowerGrid
+                                key={game}
+                                rows={ROWS}
+                                columns={COLUMNS}
+                                data={data}
+                                validationCallback={checkGrid}
+                                externalHandler={handleTurn}
+                                externalState={{ turn, sandStock, victory }}
+                            />
+                            <RightColumn>
+                                {victory !== 'none' && (
+                                    <Message>
+                                        <div>
+                                            Player <PlayerColor turn={victory}>{victory}</PlayerColor> won !
+                                        </div>
+                                        <Button onClick={handleReset}>
+                                            <b>Reset</b> the game.
+                                        </Button>
+                                    </Message>
+                                )}
+                            </RightColumn>
+                        </>
+                    ) : (
+                        <Choose>
                             <div>
-                                Player <PlayerColor turn={victory}>{victory}</PlayerColor> won !
+                                <b>Choose a level</b>
                             </div>
-                            <Reset onClick={handleReset}>
-                                <b>Reset</b> the game.
-                            </Reset>
-                        </Message>
+                            <div>
+                                <Button onClick={() => handleLevel('square')}>Square</Button>
+                            </div>
+                            <div>
+                                <Button onClick={() => handleLevel('pile')}>Pile</Button>
+                            </div>
+                        </Choose>
                     )}
-                </RightColumn>
-            </Board>
+                </Board>
+            }
         </Main>
     );
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SandpileGenerator } from '../components/generators/sandpileGenerator';
+import { SandpileGenerator } from '../components/generators/simpleSandpileGenerator';
 import { CellCoordinates, PowerGrid, ValidationCallbackType } from '../components/powerGrid';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -82,9 +82,6 @@ export default function App() {
     function stringifyCoordinates(coordinates: CellCoordinates): string {
         return `${coordinates.row}_${coordinates.column}`;
     }
-
-    const [turn, setTurn] = useState('blue');
-    const [sandStock, setSandStock] = useState(SAND_PER_TURN);
 
     return (
         <Main>

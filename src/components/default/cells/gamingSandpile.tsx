@@ -67,7 +67,7 @@ const SandPileColor = styled.button <SandPileColorType>`
 `;
 
 export const GamingSandpile: FunctionComponent<UiComponentProps<SandPileValueType>> = (props) => {
-    const { coordinates, setValue, handleTurn } = props;
+    const { coordinates, setValue, externalHandler } = props;
 
     const grid = useContext(GridContext);
     const external: SandGridContextType = useContext(ExternalContext);
@@ -86,7 +86,7 @@ export const GamingSandpile: FunctionComponent<UiComponentProps<SandPileValueTyp
             sand: sand + 1,
             owner: external.turn,
         });
-        handleTurn();
+        externalHandler();
     }
 
     function isLegal() {

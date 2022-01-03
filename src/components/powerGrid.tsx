@@ -14,7 +14,7 @@ interface CellData<T> {
     coordinates?: CellCoordinates;
     setValue: (coordinates: CellCoordinates, value: T, event?: boolean) => void;
     getValue: (coordinates: CellCoordinates) => T;
-    handleTurn: () => void;
+    externalHandler?: () => void;
 }
 
 export type CellCoordinates = { row: number, column: number };
@@ -49,7 +49,7 @@ interface Props {
     externalState?: Object;
     validationCallback?: ValidationCallbackType;
     setValueCallback?: SetValueCallbackType;
-    handleTurn: () => void;
+    externalHandler?: () => void;
 }
 
 interface StatesType {
@@ -79,7 +79,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
         className = 'default',
         infos,
         externalState,
-        handleTurn
+        externalHandler
     } = props;
 
     const [grid, setGrid] = React.useState([[]]);
@@ -123,7 +123,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
                 coordinates: { row: x, column: y },
                 setValue,
                 getValue,
-                handleTurn
+                externalHandler
             };
         }
 
@@ -134,7 +134,7 @@ export const PowerGrid: FunctionComponent<Props> = (props) => {
             coordinates: { row: x, column: y },
             setValue,
             getValue,
-            handleTurn
+            externalHandler
         };;
     }
 

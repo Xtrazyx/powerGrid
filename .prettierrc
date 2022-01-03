@@ -1,7 +1,6 @@
 {
   "printWidth": 120,
   "tabWidth": 4,
-  "parser": "babel-flow",
   "singleQuote": true,
   "trailingComma": "all"
 }
