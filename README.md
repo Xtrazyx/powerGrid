@@ -15,27 +15,32 @@ yarn install
 
 ## Running the project
 `
-yarn start
+yarn dev
 `
 
 ## Features - TODO
 
 PowerGrid
-* cells state management
-* data read and assign to cell via coordinates
+* cells state management ✅
+* data read and assign to cell via coordinates ✅
 * calculation via formula parser
-* display component injection via display registry
+* display component injection via display registry ✅
 * data validation and format via formatter registry
 * copy cell
 * reference cell
 
 PowerGridCell
 * inner state management
-* data injection into instanced component
-* manage standard display
+* data injection into instanced component ✅
+* manage standard display ✅
 * manage standard input
 
 Data Types
-* string
-* number
+* string ✅
+* number ✅
 * files
+* sandpile (!!!) ✅
+
+Demo
+* sandpile fractal ✅
+* sandpile game ✅
