@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { SandpileGenerator } from '../components/generators/simpleSandpileGenerator';
-import { CellCoordinates, PowerGrid, ValidationCallbackType } from '../components/powerGrid';
+import { SandpileGenerator } from '../../../../packages/powergrid/src/components/generators/simpleSandpileGenerator';
+import { CellCoordinates, PowerGrid, ValidationCallbackType } from '../../../../packages/powergrid/src/components/powerGrid';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 

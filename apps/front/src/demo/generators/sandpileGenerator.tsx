@@ -1,4 +1,4 @@
-import { CellCoordinates, GridDataType } from '../powerGrid';
+import { CellCoordinates, GridDataType } from 'powergrid';
 
 export type MapType = [
     gridWidth: number,

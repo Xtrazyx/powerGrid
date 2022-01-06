@@ -1,8 +1,7 @@
-import { SandpileGenerator } from '../../components/generators/sandpileGenerator';
+import { SandpileGenerator, MapType } from '../generators/sandpileGenerator';
 import { square } from './square';
 import { pile } from './pile';
-import { MapType } from '../../components/generators/sandpileGenerator';
-import { GridDataType } from '../../components/powerGrid';
+import { GridDataType } from 'powergrid';
 
 export type LevelName = 'square' | 'pile';
 export type Castle = {};

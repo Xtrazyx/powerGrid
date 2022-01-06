@@ -2,8 +2,8 @@ import * as React from 'react';
 import { FunctionComponent, ComponentType } from 'react';
 import { useEffect } from 'react';
 import defaultRegistry from './default/registry';
-import { GridContext } from '../context/gridContext';
-import { ExternalContext } from '../context/externalContext';
+import { GridContext } from './context/gridContext';
+import { ExternalContext } from './context/externalContext';
 import { omit } from 'lodash';
 import './default/global.css';
 

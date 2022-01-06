@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { CellCoordinates, PowerGrid, ValidationCallbackType, GridDataType } from '../components/powerGrid';
+import { CellCoordinates, PowerGrid, ValidationCallbackType, GridDataType } from 'powergrid';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
-import { ownerColor } from '../components/default/templates/sandpileColor';
+import { ownerColor } from 'powergrid';
 import { generateLevel, LevelName } from './levels';
 
 const Main = styled('div')`
@@ -226,7 +226,7 @@ export default function App() {
                                     <div>
                                         Sand stock is <PlayerColor turn={turn}>{sandStock}</PlayerColor>
                                     </div>
-                                    <div>|</div>
+                                    <br/>
                                     <div>
                                         Level is <b>{level}</b>
                                     </div>

@@ -1,34 +1,56 @@
 {
-  "name": "powergrid",
-  "version": "1.0.0",
-  "description": "a powerful data grid",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "scripts": {
-    "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
-    "dev": "parcel watch src/index.html && parcel src/index.html"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.4.1",
-    "@emotion/styled": "^11.3.0",
-    "@mui/material": "^5.0.2",
-    "@parcel/transformer-react-refresh-wrap": "^2.0.1",
-    "global": "^4.4.0",
-    "lodash": "^4.17.21",
-    "prettier": "^2.5.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "typescript": "^4.1.3"
-  },
-  "devDependencies": {
-    "@tsconfig/node14": "^1.0.0",
-    "@types/lodash": "^4.14.176",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "cssnano": "^5.0.10",
-    "parcel": "^2.0.1",
-    "postcss": "^8.2.15"
-  }
+    "name": "powergrid-repo",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "clean": "turbo run clean && rm -rf node_modules",
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "prettier": "^2.5.1",
+        "turbo": "latest"
+    },
+    "turbo": {
+        "pipeline": {
+            "build": {
+                "outputs": [
+                    "dist/**",
+                    ".parcel-cache/**"
+                ],
+                "dependsOn": [
+                    "^build"
+                ]
+            },
+            "test": {
+                "outputs": [
+                    "coverage/**"
+                ],
+                "dependsOn": []
+            },
+            "lint": {
+                "dependsOn": [
+                    "^build"
+                ],
+                "outputs": []
+            },
+            "dev": {
+                "cache": true
+            },
+            "clean": {
+                "cache": false
+            }
+        }
+    },
+    "dependencies": {
+        "@parcel/packager-js": "^2.0.1"
+    }
 }

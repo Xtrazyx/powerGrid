@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useContext, FunctionComponent } from 'react';
-import { GridContext } from '../../../context/gridContext';
+import { GridContext } from '../../context/gridContext';
 import { UiComponentProps } from '../../powerGrid';
 import styled from '@emotion/styled';
 

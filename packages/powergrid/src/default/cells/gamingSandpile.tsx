@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useContext, FunctionComponent } from 'react';
-import { GridContext } from '../../../context/gridContext';
+import { GridContext } from '../../context/gridContext';
 import { UiComponentProps } from '../../powerGrid';
 import styled from '@emotion/styled';
-import { ownerColor, OwnerColorType } from '../templates/sandpileColor';
-import { ExternalContext } from '../../../context/externalContext';
+import { ownerColor, OwnerColorType } from '../../templates/sandpileColor';
+import { ExternalContext } from '../../context/externalContext';
 
 export type SandPileValueType = {
     sand: number,
